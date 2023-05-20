@@ -5,38 +5,75 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
+    Alert,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import ModalForm from "./ModalForm";
 import { makePrediction } from "../services/makePrediction";
+
+interface FormFields {
+    age: number;
+    diabetes: string;
+    high_blood_pressure: string;
+    sex: string;
+    smoking: string;
+}
+
+const initialValues = {
+    age: 0,
+    diabetes: "",
+    high_blood_pressure: "",
+    sex: "",
+    smoking: "",
+};
 
 const Form = (): JSX.Element => {
     const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
     const [isModalVisible, setModalVisible] = useState<boolean>(false);
     const [result, setResult] = useState<string>("");
-    const [data, setData] = useState([]);
+    const [fields, setFields] = useState<FormFields>(initialValues);
 
     const handleValidation = () => {
+        setResult("");
+        if (
+            fields.age === 0 ||
+            fields.diabetes === "" ||
+            fields.high_blood_pressure === "" ||
+            fields.sex === "" ||
+            fields.smoking === ""
+        ) {
+            Alert.alert("Some fields are empty");
+        } else {
+            handleSubmit();
+        }
+    };
+    const handleSubmit = () => {
         setModalVisible(true);
         setIsButtonDisabled(true);
-        setResult("");
-
-        makePrediction()
+        console.log(fields);
+        fields.age = parseInt(fields.age);
+        makePrediction([fields])
             .then((response) => {
-                console.log(response);
+                const pred: number = response[0]["Prediction"];
                 setIsButtonDisabled(false);
-                const pred = Math.random() * 100;
-                if (pred > 50) {
-                    console.log("YES");
+                if (pred === 0) {
+                    setResult(`Prediction: NO`);
                 } else {
-                    console.log("NO");
+                    setResult(`Prediction: YES`);
                 }
-                setResult(`The result is: ${pred.toString()} %`);
+                console.log(`Prediction: ${pred}`);
             })
             .catch((error) => {
                 setIsButtonDisabled(false);
                 setResult("An error occurred! Try Again Later.");
-                console.log(error);
+                console.error(error);
             });
+    };
+    const handleChange = (field: keyof FormFields, value: string) => {
+        setFields((prevState) => ({
+            ...prevState,
+            [field]: value,
+        }));
     };
     return (
         <View style={styles.container}>
@@ -51,36 +88,61 @@ const Form = (): JSX.Element => {
                     style={styles.input}
                     placeholder="Age"
                     placeholderTextColor="#ccc"
+                    onChangeText={(value) => handleChange("age", value)}
                     keyboardType="numeric"
                 />
             </View>
+
             <View style={styles.inputView}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="hypertension (0 NO or 1 YES)"
-                    placeholderTextColor="#ccc"
-                    keyboardType="numeric"
-                    maxLength={1}
-                />
+                <Picker
+                    style={styles.picker}
+                    selectedValue={fields.diabetes}
+                    onValueChange={(value) => handleChange("diabetes", value)}
+                >
+                    <Picker.Item label="Diabetes" value="" />
+                    <Picker.Item label="YES" value={1} />
+                    <Picker.Item label="NO" value={0} />
+                </Picker>
             </View>
+
             <View style={styles.inputView}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="sex (0 M or 1 F)"
-                    placeholderTextColor="#ccc"
-                    keyboardType="numeric"
-                    maxLength={1}
-                />
+                <Picker
+                    style={styles.picker}
+                    selectedValue={fields.high_blood_pressure}
+                    onValueChange={(value) =>
+                        handleChange("high_blood_pressure", value)
+                    }
+                >
+                    <Picker.Item label="Hypertension" value="" />
+                    <Picker.Item label="YES" value={1} />
+                    <Picker.Item label="NO" value={0} />
+                </Picker>
             </View>
+
             <View style={styles.inputView}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="smoking (0 NO or 1 YES)"
-                    placeholderTextColor="#ccc"
-                    keyboardType="numeric"
-                    maxLength={1}
-                />
+                <Picker
+                    style={styles.picker}
+                    selectedValue={fields.sex}
+                    onValueChange={(value) => handleChange("sex", value)}
+                >
+                    <Picker.Item label="Select Sex" value="" />
+                    <Picker.Item label="Male" value={1} />
+                    <Picker.Item label="Female" value={0} />
+                </Picker>
             </View>
+
+            <View style={styles.inputView}>
+                <Picker
+                    style={styles.picker}
+                    selectedValue={fields.smoking}
+                    onValueChange={(value) => handleChange("smoking", value)}
+                >
+                    <Picker.Item label="Smoking" value="" />
+                    <Picker.Item label="YES" value={1} />
+                    <Picker.Item label="NO" value={0} />
+                </Picker>
+            </View>
+
             <TouchableOpacity
                 style={[
                     styles.submitButton,
@@ -100,26 +162,44 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#ebebeb",
+        backgroundColor: "#000000",
+    },
+    content: {
+        backgroundColor: "#121212",
+        width: "100%",
+        height: "80%",
     },
     inputView: {
+        backgroundColor: "#121212",
         width: "80%",
         height: 45,
         marginBottom: 20,
         alignItems: "center",
-        color: "red",
+        borderRadius: 4,
     },
     input: {
-        color: "#242424",
+        color: "#FFFFFF",
         width: "100%",
         height: "100%",
         padding: 10,
         borderWidth: 1,
-        borderColor: "#ccc",
+        fontSize: 16,
+        paddingLeft: 14,
+        /* borderColor: "#ccc", */
         marginBottom: 10,
     },
+    picker: {
+        color: "#FFFFFF",
+        height: "100%",
+        width: "100%",
+        borderColor: "gray",
+        borderWidth: 1 /* 
+        marginVertical: 10,
+        paddingHorizontal: 10, */,
+    },
     submitButton: {
-        backgroundColor: "#0d6efd",
+        /* backgroundColor: "#0d6efd", */
+        backgroundColor: "#3700B3",
         padding: 15,
         margin: 5,
         borderRadius: 4,

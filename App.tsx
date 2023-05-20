@@ -12,9 +12,9 @@ const Drawer = createDrawerNavigator();
 const App = (): JSX.Element => {
     return (
         <NavigationContainer>
-            <StatusBar backgroundColor="transparent" barStyle="dark-content" />
+            <StatusBar backgroundColor="#121212" barStyle="light-content" />
             <Drawer.Navigator
-                initialRouteName="Predictor"
+                initialRouteName="Prediction"
                 drawerContent={(props) => <DrawerContent {...props} />}
                 screenOptions={{
                     drawerStyle: {
@@ -24,13 +24,13 @@ const App = (): JSX.Element => {
                 }}
             >
                 <Drawer.Screen
-                    name="Predictor"
+                    name="Prediction"
                     component={Predictor}
                     options={{
                         headerStyle: {
-                            backgroundColor: "#FFF",
+                            backgroundColor: "#121212",
                         },
-                        headerTintColor: "#000",
+                        headerTintColor: "#FFFFFF",
                     }}
                 />
                 <Drawer.Screen name="Settings" component={Settings} />

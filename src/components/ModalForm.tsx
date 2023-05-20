@@ -19,13 +19,17 @@ const ModalForm: React.FC<Props> = ({ visible, onClose, result }) => {
             <View style={styles.modalContent}>
                 <View style={styles.modalBody}>
                     {result ? (
-                        <Text>{result.toString()}</Text>
+                        <Text style={{ marginBottom: 12, color: "#FFFFFF" }}>
+                            {result.toString()}
+                        </Text>
                     ) : (
                         <>
-                            <Text style={{ marginBottom: 12 }}>
+                            <Text
+                                style={{ marginBottom: 12, color: "#FFFFFF" }}
+                            >
                                 Please wait...
                             </Text>
-                            <Circle size={50} color="#ccc" />
+                            <Circle size={50} color="#FFFFFF" />
                         </>
                     )}
                 </View>
@@ -47,7 +51,7 @@ const styles = StyleSheet.create({
     modalContent: {
         width: "100%",
         height: "auto",
-        backgroundColor: "white",
+        backgroundColor: "#121212",
         padding: 22,
         justifyContent: "center",
         alignItems: "center",
