@@ -1,12 +1,14 @@
 # Heart Failure Predictor
 
+Application that helps predict if a person has heart failure.
+
 This is a mobile application developed with React Native and Expo, designed to run on real devices.
 
 ## Installation
 
 Follow these steps to install and run the application on your device:
 
-1. Clone this repository: git clone https://github.com/yourusername/MyApplication.git
+1. Clone this repository: git clone https://github.com/JoelFH23/heart-failure-prediction-react-ts
 2. Navigate to the project directory: cd heart-failure-predictor-ts
 3. Install the dependencies: npm install
 4. Run the application: npx expo start
